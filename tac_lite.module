@@ -2,10 +2,12 @@
 
 /**
  * @file
- * Contains tac_lite.module..
+ * Contains tac_lite.module.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Implements hook_help().
@@ -47,11 +49,10 @@ function tac_lite_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_
  * We are given a node and we return records for the node_access table.  In our
  * case, we inpect the node's taxonomy and grant permissions based on the terms.
  */
-function tac_lite_node_access_records(\Drupal\node\NodeInterface $node) {
+function tac_lite_node_access_records(NodeInterface $node) {
   // All terms from all vocabularies.
   $all_tids = _tac_lite_get_terms($node);
   // Just the vocabularies we're interested in.
-//  $vids = variable_get('tac_lite_categories', NULL);
   $vids = \Drupal::config('tac_lite.settings')->get('categories');
   // Now find just the terms we're interested in.
   $tids = [];
@@ -85,13 +86,13 @@ function tac_lite_node_access_records(\Drupal\node\NodeInterface $node) {
       /** @var \Drupal\tac_lite\Entity\TACLiteScheme $scheme */
       $scheme = $scheme_storage->load($scheme);
       foreach ($tids as $tid) {
-        $grant = array(
+        $grant = [
           'realm' => $scheme->id(),
           'gid' => $tid, // Use term id as grant id.
           'grant_view' => 0,
           'grant_update' => 0,
           'grant_delete' => 0,
-        );
+        ];
         foreach ($scheme->getPermissions() as $perm) {
           $grant[$perm] = TRUE;
         }
@@ -102,7 +103,16 @@ function tac_lite_node_access_records(\Drupal\node\NodeInterface $node) {
   }
 }
 
-function _tac_lite_get_terms(\Drupal\node\NodeInterface $node) {
+/**
+ * Returns the terms of a node from the 'interesting' vocabularies only.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node whose term we are interested in.
+ *
+ * @return array
+ *   An array of term IDs.
+ */
+function _tac_lite_get_terms(NodeInterface $node) {
   $tids = [];
 
   // Get the vids that tac_lite cares about.
@@ -132,7 +142,7 @@ function _tac_lite_get_terms(\Drupal\node\NodeInterface $node) {
  *
  * We organize our data structure by vid and tid.
  */
-function tac_lite_node_get_terms(\Drupal\node\NodeInterface $node) {
+function tac_lite_node_get_terms(NodeInterface $node) {
   $terms = &drupal_static(__FUNCTION__);
   /** @var \Drupal\taxonomy\TermStorage $term_storage */
   static $term_storage;
@@ -170,14 +180,14 @@ function tac_lite_node_get_terms(\Drupal\node\NodeInterface $node) {
  * Returns any grants which may give the user permission to perform the
  * requested op.
  */
-function tac_lite_node_grants(\Drupal\Core\Session\AccountInterface $account, $op) {
+function tac_lite_node_grants(AccountInterface $account, $op) {
   static $scheme_storage;
   if (!$scheme_storage) {
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorage $scheme_storage */
     $scheme_storage = \Drupal::getContainer()->get('entity_type.manager')->getStorage('tac_lite_scheme');
   }
 
-  $grants = array();
+  $grants = [];
   $result = \Drupal::entityQuery('tac_lite_scheme')->execute();
   foreach ($result as $scheme) {
     /** @var \Drupal\tac_lite\Entity\TACLiteScheme $scheme */
@@ -185,7 +195,6 @@ function tac_lite_node_grants(\Drupal\Core\Session\AccountInterface $account, $o
     if (in_array('grant_' . $op, $scheme->getPermissions())) {
       $grants[$scheme->id()] = _tac_lite_user_tids($account, $scheme);
     }
-
   }
   if (count($grants)) {
     return $grants;
@@ -198,11 +207,11 @@ function tac_lite_node_grants(\Drupal\Core\Session\AccountInterface $account, $o
  * Users are granted access to terms either because of who they are, or because
  * of the roles they have.
  */
-function _tac_lite_user_tids(\Drupal\Core\Session\AccountInterface $account, \Drupal\tac_lite\TACLiteSchemeInterface $scheme) {
+function _tac_lite_user_tids(AccountInterface $account, \Drupal\tac_lite\TACLiteSchemeInterface $scheme) {
   // Grant id 0 is reserved for nodes which were not given a grant id when they
   // were created. By adding 0 to the grant id, we let the user view those
   // nodes.
-  $grants = array(0);
+  $grants = [0];
   $realm = $scheme->id();
 //  if (isset($account->data[$realm]) && count($account->data[$realm])) {
 //    // $account->$realm is array. Keys are vids, values are array of tids within
@@ -237,9 +246,10 @@ function _tac_lite_user_tids(\Drupal\Core\Session\AccountInterface $account, \Dr
 /**
  * Implements hook_query_alter().
  */
-function tac_lite_query_alter(Drupal\Core\Database\Query\AlterableInterface $query) {
-  /** @var \Drupal\Core\Database\Query\Select $cast_query */
-//  $cast_query = $query;
+function tac_lite_query_alter(\Drupal\Core\Database\Query\AlterableInterface $query) {
+  // The hook's fingerprint must match, even if its single parameter has a
+  // different type.
+  /** @var \Drupal\Core\Database\Query\Select $query */
   // HELP: What is the proper way to find the alias of the primary table here?
   $t = $query->getTables();
   $primary_table = '';
@@ -257,7 +267,6 @@ function tac_lite_query_alter(Drupal\Core\Database\Query\AlterableInterface $que
     return;
   }
 
-//  dpm($query, __FUNCTION__);
   $user = \Drupal::currentUser();
   // If this user has administer rights, don't filter.
   if ($user->hasPermission('administer tac_lite')) {
@@ -272,8 +281,7 @@ function tac_lite_query_alter(Drupal\Core\Database\Query\AlterableInterface $que
     $schemes = $scheme_storage->loadMultiple();
   }
 
-
-  // Get our vocabularies and schemes from variables. Return if we have none.
+  // Get our vocabularies and schemes from config. Return if we have none.
   $vids = \Drupal::config('tac_lite.settings')->get('categories');
   if (!$vids || !count($vids) || !$schemes) {
     return;
@@ -281,7 +289,7 @@ function tac_lite_query_alter(Drupal\Core\Database\Query\AlterableInterface $que
 
   // The terms this user is allowed to see.
   $term_visibility = FALSE;
-  $tids = array();
+  $tids = [];
   /** @var \Drupal\tac_lite\Entity\TACLiteScheme $scheme */
   foreach ($schemes as $scheme) {
     if ($scheme->getTermVisibility()) {

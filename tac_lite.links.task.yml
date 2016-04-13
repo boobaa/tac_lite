@@ -1,4 +1,4 @@
-# @TODO
+# TAC Lite local tasks definition.
 tac_lite.admin_settings:
   title: 'Admin Settings'
   route_name: tac_lite.admin_settings
@@ -8,4 +8,3 @@ tac_lite.admin_settings_schemes:
   title: 'Schemes'
   route_name: entity.tac_lite_scheme.collection
   base_route: tac_lite.admin_settings
-

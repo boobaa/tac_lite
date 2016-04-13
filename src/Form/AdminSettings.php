@@ -82,29 +82,29 @@ class AdminSettings extends ConfigFormBase {
     $vocabularies = taxonomy_vocabulary_get_names();
 
     if (!count($vocabularies)) {
-      $form['body'] = array(
-        '#markup' => t('You must <a href="!url">create a vocabulary</a> before you can use tac_lite.',
-          array('!url' => Url::fromRoute('entity.taxonomy_vocabulary.add_form')->toString())),
-      );
+      $form['body'] = [
+        '#markup' => $this->t('You must <a href="!url">create a vocabulary</a> before you can use tac_lite.',
+          ['!url' => Url::fromRoute('entity.taxonomy_vocabulary.add_form')->toString()]),
+      ];
     }
     else {
       $config = $this->config('tac_lite.settings');
 
-      $options = array();
+      $options = [];
       foreach ($vocabularies as $vocabulary) {
         $vocabulary = $this->vocabulary_storage->load($vocabulary);
         $options[$vocabulary->id()] = $vocabulary->label();
       }
 
-      $form['categories'] = array(
+      $form['categories'] = [
         '#type' => 'select',
-        '#title' => t('Vocabularies'),
+        '#title' => $this->t('Vocabularies'),
         '#default_value' => $config->get('categories'),
         '#options' => $options,
-        '#description' => t('Select one or more vocabularies to control privacy.  <br/>Use caution with hierarchical (nested) taxonomies as <em>visibility</em> settings may cause problems on node edit forms.<br/>Do not select free tagging vocabularies, they are not supported.'),
+        '#description' => $this->t('Select one or more vocabularies to control privacy.  <br/>Use caution with hierarchical (nested) taxonomies as <em>visibility</em> settings may cause problems on node edit forms.<br/>Do not select free tagging vocabularies, they are not supported.'),
         '#multiple' => TRUE,
         '#required' => TRUE,
-      );
+      ];
       // TAC Lite Schemes are now config entities, so we don't provide a select
       // here to set the number of them.
     }

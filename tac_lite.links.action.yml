@@ -1,3 +1,4 @@
+# TAC Lite local actions definition.
 entity.tac_lite_scheme.add_form:
   route_name: 'entity.tac_lite_scheme.add_form'
   title: 'Add TAC Lite Scheme'

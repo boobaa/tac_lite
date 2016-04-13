@@ -77,39 +77,39 @@ class TACLiteSchemeForm extends EntityForm {
         '#disabled' => !$tac_lite_scheme->isNew(),
       ];
       // Currently, only view, update and delete are supported by node_access
-      $options = array(
+      $options = [
         'grant_view' => 'view',
         'grant_update' => 'update',
         'grant_delete' => 'delete',
-      );
+      ];
 
       $form['permissions'] = [
         '#type' => 'select',
-        '#title' => t('Permissions'),
+        '#title' => $this->t('Permissions'),
         '#multiple' => TRUE,
         '#options' => $options,
         '#default_value' => $tac_lite_scheme->getPermissions(),
-        '#description' => t('Select which permissions are granted by this scheme.  <br/>Note when granting update, it is best to enable visibility on all terms.  Otherwise a user may unknowingly remove invisible terms while editing a node.'),
+        '#description' => $this->t('Select which permissions are granted by this scheme.  <br/>Note when granting update, it is best to enable visibility on all terms.  Otherwise a user may unknowingly remove invisible terms while editing a node.'),
         '#required' => FALSE,
       ];
 
-      $form['term_visibility'] = array(
+      $form['term_visibility'] = [
         '#type' => 'checkbox',
-        '#title' => t('Visibility'),
-        '#description' => t('If checked, this scheme determines whether a user can view <strong>terms</strong>.  Note the <em>view</em> permission in the select field above refers to <strong>node</strong> visibility.  This checkbox refers to <strong>term</strong> visibility, for example in a content edit form or tag cloud.'),
+        '#title' => $this->t('Visibility'),
+        '#description' => $this->t('If checked, this scheme determines whether a user can view <strong>terms</strong>.  Note the <em>view</em> permission in the select field above refers to <strong>node</strong> visibility.  This checkbox refers to <strong>term</strong> visibility, for example in a content edit form or tag cloud.'),
         '#default_value' => $tac_lite_scheme->getTermVisibility(),
-      );
+      ];
 
-      $form['helptext'] = array(
-        '#markup' => t('To grant to an individual user, visit the <em>access by taxonomy</em> tab on the account edit page.'),
+      $form['helptext'] = [
+        '#markup' => $this->t('To grant to an individual user, visit the <em>access by taxonomy</em> tab on the account edit page.'),
         '#prefix' => '<p>',
         '#suffix' => '</p>',
-      );
-      $form['helptext2'] = array(
-        '#markup' => t('To grant by role, select the terms below.'),
+      ];
+      $form['helptext2'] = [
+        '#markup' => $this->t('To grant by role, select the terms below.'),
         '#prefix' => '<p>',
         '#suffix' => '</p>',
-      );
+      ];
 
       $all_defaults = $tac_lite_scheme->getGrants();
       $form['grants'] = ['#tree' => TRUE];
@@ -125,14 +125,14 @@ class TACLiteSchemeForm extends EntityForm {
         $defaults = isset($all_defaults[$rid]) ? $all_defaults[$rid] : NULL;
         foreach ($vids as $vid) {
           $tree = $this->term_storage->loadTree($vid);
-          $options = ['<' . t('none') . '>'];
+          $options = ['<' . $this->t('none') . '>'];
           foreach ($tree as $term) {
             $options[$term->tid] = $term->name;
           }
 
           $form['grants'][$rid][$vid] = [
             '#type' => 'select',
-            '#title' => t('Parent terms'),
+            '#title' => $this->t('Parent terms'),
             '#options' => $options,
             '#default_value' => isset($defaults[$vid]) ? $defaults[$vid] : NULL,
             '#multiple' => TRUE,
