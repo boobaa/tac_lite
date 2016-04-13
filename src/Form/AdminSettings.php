@@ -120,13 +120,9 @@ class AdminSettings extends ConfigFormBase {
     // First, save settings the default way.
     $config = $this->config('tac_lite.settings');
     $config->set('categories', $form_state->getValue('categories'));
-    $config->set('schemes', $form_state->getValue('schemes'));
     $config->save();
     // Next, rebuild the node_access table.
     node_access_rebuild(TRUE);
-    // FIXME: Check if it's really needed.
-    // And rebuild routes, in case the number of schemes has changed.
-    $this->route_builder->setRebuildNeeded();
   }
 
 }

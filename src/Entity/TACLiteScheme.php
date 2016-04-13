@@ -28,7 +28,7 @@ use Drupal\tac_lite\TACLiteSchemeInterface;
  *     },
  *   },
  *   config_prefix = "tac_lite_scheme",
- *   admin_permission = "administer site configuration",
+ *   admin_permission = "administer tac_lite",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",

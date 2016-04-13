@@ -117,7 +117,7 @@ class TACLiteSchemeForm extends EntityForm {
         $form['grants'][$rid] = [
           '#type' => 'fieldset',
           '#tree' => TRUE,
-          '#title' => $this->t('Grant permission by role: !role', ['!role' => $role->label()]),
+          '#title' => $this->t('Grant permission by role: %role', ['%role' => $role->label()]),
           '#description' => $this->t(''),
           '#collapsible' => TRUE,
         ];

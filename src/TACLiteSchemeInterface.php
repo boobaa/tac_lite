@@ -13,7 +13,6 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * Provides an interface for defining TAC Lite Scheme entities.
  */
 interface TACLiteSchemeInterface extends ConfigEntityInterface {
-  // Add get/set methods for your configuration properties here.
 
   /**
    * Returns the Scheme label.

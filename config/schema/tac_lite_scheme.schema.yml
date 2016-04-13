@@ -11,26 +11,22 @@ tac_lite.tac_lite_scheme.*:
     uuid:
       type: string
     permissions:
-      type: mapping
+      type: sequence
       label: 'Permissions'
-      mapping:
+      sequence:
         type: string
-        label: 'Grant view/update/delete'
-    term_visibility:
+    visibility:
       type: boolean
       label: 'Term visibility'
     grants:
-      type: mapping
+      type: sequence
       label: 'Grants'
-      mapping:
-        vocabularies:
-          type: mapping
-          label: 'Vocabularies per role ID'
-          mapping:
-            terms:
-              type: mapping
-              label: 'Terms per vocabulary ID'
-              mapping:
-                term:
-                  type: integer
-                  label: 'Term ID'
+      sequence:
+        type: sequence
+        label: 'Vocabularies per role ID'
+        sequence:
+          type: sequence
+          label: 'Terms per vocabulary ID'
+          sequence:
+            type: integer
+            label: 'Term ID'
