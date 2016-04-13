@@ -1,0 +1,7 @@
+tac_lite.admin_settings:
+  path: '/admin/people/access/tac_lite'
+  defaults:
+    _form: '\Drupal\tac_lite\Form\AdminSettings'
+    _title: 'Access by Taxonomy'
+  requirements:
+    _permission: 'administer tac_lite'

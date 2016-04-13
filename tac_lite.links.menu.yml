@@ -1,0 +1,10 @@
+# @TODO: Add an entry for the settings form.
+
+# TAC Lite Scheme menu items definition.
+entity.tac_lite_scheme.collection:
+  title: 'TAC Lite Scheme'
+  route_name: entity.tac_lite_scheme.collection
+  description: 'List TAC Lite Schemes'
+  # @TODO: This entry's parent should be the above TODO.
+  parent: system.admin_structure
+  weight: 99

@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * Installation functions for tac_lite.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Ensure that tac_lite hooks are invoked after taxonomy module hooks.
+ */
+function tac_lite_install() {
+  $taxonomy_weight = \Drupal::configFactory()->get('core.extension')->get('module.taxonomy');
+  module_set_weight('tac_lite', $taxonomy_weight + 9);
+  // Note that it is not necessary to rebuild the node access table here, as
+  // that will be done when module settings are saved.
+}

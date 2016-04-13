@@ -1,0 +1,36 @@
+tac_lite.tac_lite_scheme.*:
+  type: config_entity
+  label: 'TAC Lite Scheme config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Name'
+    uuid:
+      type: string
+    permissions:
+      type: mapping
+      label: 'Permissions'
+      mapping:
+        type: string
+        label: 'Grant view/update/delete'
+    term_visibility:
+      type: boolean
+      label: 'Term visibility'
+    grants:
+      type: mapping
+      label: 'Grants'
+      mapping:
+        vocabularies:
+          type: mapping
+          label: 'Vocabularies per role ID'
+          mapping:
+            terms:
+              type: mapping
+              label: 'Terms per vocabulary ID'
+              mapping:
+                term:
+                  type: integer
+                  label: 'Term ID'
