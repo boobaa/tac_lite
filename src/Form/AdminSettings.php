@@ -93,7 +93,7 @@ class AdminSettings extends ConfigFormBase {
       $options = [];
       foreach ($vocabularies as $vocabulary) {
         $vocabulary = $this->vocabulary_storage->load($vocabulary);
-        $options[$vocabulary->id()] = $vocabulary->label();
+        $options[] = $vocabulary->label();
       }
 
       $form['categories'] = [
