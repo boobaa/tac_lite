@@ -1,0 +1,44 @@
+id: d6_tac_lite_schemes
+label: TAC Lite schemes
+migration_tags:
+  - Drupal 6
+source:
+  plugin: d6_tac_lite_scheme
+process:
+  name:
+    -
+      plugin: machine_name
+      source: label
+    -
+      plugin: dedupe_entity
+      entity_type: tac_lite_scheme
+      field: name
+      length: 32
+  id: '@name'
+  label: label
+  permissions: permissions
+  visibility: visibility
+  grants:
+    plugin: tac_lite_scheme_iterator
+    source: grants
+    role:
+      plugin: migration
+      migration: d6_user_role
+      source: role
+    vocabulary:
+      plugin: migration
+      migration: d6_taxonomy_vocabulary
+      source: vocabulary
+    term:
+      plugin: migration
+      migration: d6_taxonomy_term
+      source: term
+
+destination:
+  plugin: entity:tac_lite_scheme
+migration_dependencies:
+  required:
+    - d6_user_role
+    - d6_taxonomy_vocabulary
+    - d6_taxonomy_term
+#    - tac_lite_settings
